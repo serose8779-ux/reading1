@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Mic, Play, RotateCcw } from "lucide-react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { Mic, Play, RotateCcw, ThumbsUp } from "lucide-react";
 import { WordBadge } from "./WordBadge";
 import { Visualizer } from "./Visualizer";
 import { useTextToSpeech } from "../hooks/useTextToSpeech";
@@ -14,6 +14,12 @@ export function Reader() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const { speak } = useTextToSpeech();
     const { isListening, transcript, startListening, stopListening } = useSpeechToText();
+    const audioRef = useRef<HTMLAudioElement | null>(null);
+
+    // Initialize audio object
+    useEffect(() => {
+        audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
+    }, []);
 
     // Split sentences for layout (keeping punctuation)
     const sentences = useMemo(() => {
@@ -28,6 +34,18 @@ export function Reader() {
         if (index >= spokenWords.length || spokenWords[0] === "") return "pending";
         return compareWords(targetWords[index], spokenWords[index]) ? "correct" : "incorrect";
     };
+
+    const isSentenceComplete = useMemo(() => {
+        return targetWords.length > 0 && targetWords.every((_, i) => getWordStatus(i) === "correct");
+    }, [targetWords, spokenWords]);
+
+    // Play sound when sentence is complete
+    useEffect(() => {
+        if (isSentenceComplete && audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play().catch(e => console.error("Audio play failed:", e));
+        }
+    }, [isSentenceComplete]);
 
     const handleNext = () => {
         stopListening();
@@ -50,10 +68,15 @@ export function Reader() {
     return (
         <div className="max-w-4xl w-full flex flex-col items-center gap-12 p-8">
             <div className="flex flex-col items-center gap-6 min-h-[120px] max-w-2xl px-4 text-center">
-                <div className="flex flex-wrap justify-center gap-x-3 gap-y-4">
+                <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-4">
                     {targetWords.map((word, wIdx) => (
                         <WordBadge key={wIdx} word={word} status={getWordStatus(wIdx)} />
                     ))}
+                    {isSentenceComplete && (
+                        <div className="animate-bounce ml-4">
+                            <ThumbsUp className="w-10 h-10 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]" />
+                        </div>
+                    )}
                 </div>
             </div>
 
