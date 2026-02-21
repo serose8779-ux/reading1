@@ -14,23 +14,36 @@ export function Reader() {
     const { speak } = useTextToSpeech();
     const { isListening, transcript, startListening, stopListening } = useSpeechToText();
 
-    const targetWords = useMemo(() => TARGET_SENTENCE.split(" "), []);
-    const spokenWords = useMemo(() => cleanText(transcript).split(" "), [transcript]);
+    // Split sentences for layout (keeping punctuation)
+    const sentences = useMemo(() => {
+        return TARGET_SENTENCE.match(/[^.!?]+[.!?]*/g)?.map(s => s.trim()) || [TARGET_SENTENCE];
+    }, []);
 
-    const getWordStatus = (index: number) => {
-        if (index >= spokenWords.length || spokenWords[0] === "") return "pending";
-        return compareWords(targetWords[index], spokenWords[index]) ? "correct" : "incorrect";
+    const targetWords = useMemo(() => TARGET_SENTENCE.split(/\s+/), []);
+    const spokenWords = useMemo(() => cleanText(transcript).split(/\s+/), [transcript]);
+
+    const getWordStatus = (globalIndex: number) => {
+        if (globalIndex >= spokenWords.length || spokenWords[0] === "") return "pending";
+        return compareWords(targetWords[globalIndex], spokenWords[globalIndex]) ? "correct" : "incorrect";
     };
 
     const reset = () => {
         stopListening();
     };
 
+    // Helper to get global index while mapping sentences
+    let wordCounter = 0;
+
     return (
         <div className="max-w-4xl w-full flex flex-col items-center gap-12 p-8">
-            <div className="flex flex-wrap justify-center gap-x-3 gap-y-4 min-h-[120px] max-w-2xl px-4">
-                {targetWords.map((word, i) => (
-                    <WordBadge key={i} word={word} status={getWordStatus(i)} />
+            <div className="flex flex-col items-center gap-6 min-h-[120px] max-w-2xl px-4 text-center">
+                {sentences.map((sentence, sIdx) => (
+                    <div key={sIdx} className="flex flex-wrap justify-center gap-x-3 gap-y-4">
+                        {sentence.split(/\s+/).map((word, wIdx) => {
+                            const currentIdx = wordCounter++;
+                            return <WordBadge key={wIdx} word={word} status={getWordStatus(currentIdx)} />;
+                        })}
+                    </div>
                 ))}
             </div>
 
@@ -39,8 +52,8 @@ export function Reader() {
 
                 <Visualizer active={isListening} />
 
-                <p className="text-white/40 text-sm font-mono uppercase tracking-[0.2em]">
-                    {isListening ? "Listening for input..." : "Standby for transmission"}
+                <p className="text-white/40 text-sm font-mono uppercase tracking-[0.2em] text-center">
+                    {isListening ? "음성을 분석 중입니다..." : "음성 입력 대기 중"}
                 </p>
 
                 <div className="flex items-center gap-6">
@@ -70,7 +83,7 @@ export function Reader() {
 
             {transcript && (
                 <div className="w-full bg-magenta/5 border border-magenta/20 p-4 rounded-xl font-mono text-sm text-center">
-                    <span className="text-magenta font-bold">RAW SIG:</span> {transcript}
+                    <span className="text-magenta font-bold">원본 신호:</span> {transcript}
                 </div>
             )}
         </div>

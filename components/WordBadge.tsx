@@ -20,7 +20,7 @@ export function WordBadge({ word, status }: WordBadgeProps) {
             animate={{ opacity: 1, y: 0 }}
             className={cn(
                 "text-4xl font-black transition-all duration-500 tracking-tight",
-                status === "pending" && "text-white/20",
+                status === "pending" && "text-white",
                 status === "correct" && "text-neon-blue drop-shadow-[0_0_8px_rgba(77,238,234,0.8)] scale-110",
                 status === "incorrect" && "text-neon-red drop-shadow-[0_0_8px_rgba(255,49,49,0.8)]"
             )}

@@ -16,8 +16,8 @@ export function Header() {
 
             <div className="flex items-center gap-4 bg-cyber-black/50 p-2 px-4 rounded-full border border-magenta/30">
                 <div className="text-right">
-                    <p className="text-xs text-white/50 leading-none">AGENT ID</p>
-                    <p className="text-sm font-bold text-magenta">STELLA_05</p>
+                    <p className="text-xs text-white/50 leading-none">에이전트 ID</p>
+                    <p className="text-sm font-bold text-magenta">스텔라_05</p>
                 </div>
                 <div className="w-8 h-8 rounded-full border border-magenta flex items-center justify-center">
                     <User className="w-5 h-5 text-magenta" />
