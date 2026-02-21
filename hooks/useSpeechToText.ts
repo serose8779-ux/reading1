@@ -13,7 +13,7 @@ export const useSpeechToText = () => {
             recognitionRef.current = new SpeechRecognition();
             recognitionRef.current.continuous = true;
             recognitionRef.current.interimResults = true;
-            recognitionRef.current.lang = "en-US";
+            recognitionRef.current.lang = "ko-KR";
 
             recognitionRef.current.onresult = (event: any) => {
                 let currentTranscript = "";

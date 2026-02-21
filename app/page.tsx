@@ -12,9 +12,9 @@ export default function Home() {
 
       <div className="z-10 w-full flex flex-col items-center">
         <div className="mb-8 flex flex-col items-center">
-          <span className="text-cyan text-xs font-mono tracking-widest uppercase mb-2">mission_objective</span>
+          <span className="text-cyan text-xs font-mono tracking-widest uppercase mb-2">미션_목표</span>
           <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter text-center">
-            Speak the <span className="text-cyan">Code</span>
+            음성 <span className="text-cyan">코드</span>를 입력하세요
           </h2>
         </div>
 

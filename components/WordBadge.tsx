@@ -19,10 +19,10 @@ export function WordBadge({ word, status }: WordBadgeProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={cn(
-                "px-4 py-2 rounded-lg border-2 text-2xl font-bold transition-all duration-300",
-                status === "pending" && "border-cyan/30 text-white/50",
-                status === "correct" && "border-neon-blue text-neon-blue shadow-[0_0_15px_rgba(77,238,234,0.5)]",
-                status === "incorrect" && "border-neon-red text-neon-red shadow-[0_0_15px_rgba(255,49,49,0.5)]"
+                "text-4xl font-black transition-all duration-500 tracking-tight",
+                status === "pending" && "text-white/20",
+                status === "correct" && "text-neon-blue drop-shadow-[0_0_8px_rgba(77,238,234,0.8)] scale-110",
+                status === "incorrect" && "text-neon-red drop-shadow-[0_0_8px_rgba(255,49,49,0.8)]"
             )}
         >
             {word}

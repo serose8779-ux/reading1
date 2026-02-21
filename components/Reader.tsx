@@ -28,7 +28,7 @@ export function Reader() {
 
     return (
         <div className="max-w-4xl w-full flex flex-col items-center gap-12 p-8">
-            <div className="flex flex-wrap justify-center gap-4 min-h-[120px]">
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-4 min-h-[120px] max-w-2xl px-4">
                 {targetWords.map((word, i) => (
                     <WordBadge key={i} word={word} status={getWordStatus(i)} />
                 ))}
