@@ -1,16 +1,20 @@
 "use client";
 
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Mic, Play, RotateCcw, ThumbsUp } from "lucide-react";
+import { Mic, Play, RotateCcw, ThumbsUp, Home } from "lucide-react";
 import { WordBadge } from "./WordBadge";
 import { Visualizer } from "./Visualizer";
 import { useTextToSpeech } from "../hooks/useTextToSpeech";
 import { useSpeechToText } from "../hooks/useSpeechToText";
 import { cleanText, compareWords } from "../lib/utils";
 
-const TARGET_SENTENCE = "Where are you from? I am from Korea.";
+interface ReaderProps {
+    sentences: string[];
+    title: string;
+    onBack: () => void;
+}
 
-export function Reader() {
+export function Reader({ sentences, title, onBack }: ReaderProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const { speak } = useTextToSpeech();
     const { isListening, transcript, startListening, stopListening } = useSpeechToText();
@@ -19,11 +23,6 @@ export function Reader() {
     // Initialize audio object
     useEffect(() => {
         audioRef.current = new Audio("https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3");
-    }, []);
-
-    // Split sentences for layout (keeping punctuation)
-    const sentences = useMemo(() => {
-        return TARGET_SENTENCE.match(/[^.!?]+[.!?]*/g)?.map(s => s.trim()) || [TARGET_SENTENCE];
     }, []);
 
     const currentTargetSentence = sentences[currentIndex];
@@ -83,7 +82,7 @@ export function Reader() {
             <div className="flex flex-col items-center gap-8 w-full bg-cyan/5 border-2 border-cyan/20 p-12 rounded-3xl relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan to-transparent opacity-50" />
 
-                <Visualizer active={isListening} />
+                {isListening && <Visualizer active={isListening} />}
 
                 <p className="text-white/40 text-sm font-mono uppercase tracking-[0.2em] text-center">
                     {isListening ? "음성을 분석 중입니다..." : "음성 입력 대기 중"}
@@ -135,6 +134,14 @@ export function Reader() {
                         NEXT
                     </button>
                 </div>
+
+                <button
+                    onClick={onBack}
+                    className="mt-8 flex items-center gap-2 text-[10px] font-mono text-white/30 hover:text-cyan transition-colors uppercase tracking-[0.2em]"
+                >
+                    <Home className="w-3 h-3" />
+                    lesson_select.return()
+                </button>
             </div>
 
             {transcript && (

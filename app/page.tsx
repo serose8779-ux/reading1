@@ -1,7 +1,13 @@
 import { Header } from "@/components/Header";
 import { Reader } from "@/components/Reader";
 
+import { useState } from "react";
+import { Lesson } from "@/lib/lessons";
+import { LessonSelector } from "@/components/LessonSelector";
+
 export default function Home() {
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+
   return (
     <main className="min-h-screen bg-[#050505] flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background Decor */}
@@ -12,13 +18,27 @@ export default function Home() {
 
       <div className="z-10 w-full flex flex-col items-center">
         <div className="mb-8 flex flex-col items-center">
-          <span className="text-cyan text-xs font-mono tracking-widest uppercase mb-2">미션_목표</span>
+          <span className="text-cyan text-xs font-mono tracking-widest uppercase mb-2">
+            {selectedLesson ? "미션_진행중" : "미션_선택"}
+          </span>
           <h2 className="text-4xl font-black text-white italic uppercase tracking-tighter text-center">
-            음성 <span className="text-cyan">코드</span>를 입력하세요
+            {selectedLesson ? (
+              <>음성 <span className="text-cyan">코드</span>를 입력하세요</>
+            ) : (
+              <>학습할 <span className="text-cyan">레슨</span>을 선택하세요</>
+            )}
           </h2>
         </div>
 
-        <Reader />
+        {selectedLesson ? (
+          <Reader
+            sentences={selectedLesson.sentences}
+            title={selectedLesson.title}
+            onBack={() => setSelectedLesson(null)}
+          />
+        ) : (
+          <LessonSelector onSelect={setSelectedLesson} />
+        )}
       </div>
 
       <footer className="fixed bottom-6 text-[10px] font-mono text-white/20 tracking-[0.3em] uppercase">
